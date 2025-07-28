@@ -26,7 +26,7 @@ const MySQLStore = expressMysqlSession(session);
 const __dirname = path.resolve();
 const app = express();
 
-dotenv.config();
+dotenv.config({ path: path.resolve('config/.env') });
 
 // Serve uploaded images
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
