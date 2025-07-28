@@ -2,6 +2,8 @@ import express from 'express';
 import passport from 'passport';
 import bcrypt from 'bcryptjs';
 import db from '../config/db.js';
+import { createUser } from '../models/userModel.js';
+
 
 const router = express.Router();
 
