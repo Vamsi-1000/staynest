@@ -5,20 +5,13 @@ import passport from 'passport';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
-import db from './config/db.js';
+import './config/db.js';
 import './config/passport.js';
 import listingRoutes from './routes/listings.js';
 import reviewRoutes from './routes/reviews.js';
 import userRoutes from './routes/users.js';
 import path from 'path';
 import expressMysqlSession from 'express-mysql-session';
-
-db.query("SELECT 1")
-  .then(() => console.log("✅ Connected to remote MySQL database"))
-  .catch((err) => console.error("❌ DB connection failed:", err));
-
-
-
 
 
 
