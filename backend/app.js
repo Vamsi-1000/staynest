@@ -80,8 +80,8 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: false, // set to true if using HTTPS
-    sameSite: 'lax', // allows cross-site cookies on navigation
+    secure: true, // set to true if using HTTPS
+    sameSite: 'none', // allows cross-site cookies on navigation
     maxAge: 24 * 60 * 60 * 1000, // 1 day
   }
 }));
