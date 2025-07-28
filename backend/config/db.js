@@ -1,7 +1,7 @@
 // db.js
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
-dotenv.config({ path: './config/.env' });
+dotenv.config({ path: path.resolve('config/.env') });
 
 
 const pool = mysql.createPool({
@@ -15,5 +15,6 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
+console.log('Using DB:', process.env.DB_NAME);
 export default pool;
 
