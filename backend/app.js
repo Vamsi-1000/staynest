@@ -21,6 +21,9 @@ const app = express();
 
 dotenv.config({ path: path.resolve('config/.env') });
 
+app.set('trust proxy', 1); // Important for secure cookies behind reverse proxy
+
+
 // Serve uploaded images
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads', express.static('uploads'));
@@ -34,7 +37,6 @@ app.use(cors({
 
 // Parsing middleware
 app.use(express.json());
-app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // Session store configuration
@@ -63,6 +65,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(cookieParser());
 
 // Setup express-session
 app.use(session({
