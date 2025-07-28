@@ -6,39 +6,62 @@ import db from '../config/db.js';
 const router = express.Router();
 
 // REGISTER
-router.post('/register', async (req, res) => {
+router.post('/register', (req, res) => {
   const { name, email, phone, password } = req.body;
 
   if (!name || !email || !phone || !password) {
     return res.status(400).json({ message: 'All fields are required.' });
   }
 
-  try {
-    const [existingUsers] = await db.promise().query('SELECT * FROM users WHERE email = ?', [email]);
-    if (existingUsers.length > 0) {
+  // Check if user already exists
+  db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
+    if (err) {
+      console.error('DB Error (select user):', err);
+      return res.status(500).json({ message: 'Server error while checking user.' });
+    }
+
+    if (results.length > 0) {
       return res.status(400).json({ message: 'User already exists.' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const insertQuery = 'INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)';
-    const [result] = await db.promise().query(insertQuery, [name, email, phone, hashedPassword]);
+    try {
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-    const userId = result.insertId;
+      // Insert new user
+      const insertQuery = 'INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)';
+      db.query(insertQuery, [name, email, phone, hashedPassword], (err, insertResult) => {
+        if (err) {
+          console.error('DB Error (insert user):', err);
+          return res.status(500).json({ message: 'Server error during registration.' });
+        }
 
-    // Fetch the created user
-    const [rows] = await db.promise().query('SELECT * FROM users WHERE id = ?', [userId]);
-    const user = rows[0];
+        const userId = insertResult.insertId;
 
-    // Set session
-    req.login(user, (err) => {
-      if (err) return res.status(500).json({ message: 'Session error' });
-      res.status(200).json({ message: 'User registered and logged in!', user });
-    });
+        // Fetch created user
+        db.query('SELECT * FROM users WHERE id = ?', [userId], (err, userResults) => {
+          if (err) {
+            console.error('DB Error (fetch new user):', err);
+            return res.status(500).json({ message: 'Server error after registration.' });
+          }
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error.' });
-  }
+          const user = userResults[0];
+
+          // Set session
+          req.login(user, (err) => {
+            if (err) {
+              console.error('Login error:', err);
+              return res.status(500).json({ message: 'Session error.' });
+            }
+
+            res.status(200).json({ message: 'User registered and logged in!', user });
+          });
+        });
+      });
+    } catch (error) {
+      console.error('Hashing error:', error);
+      res.status(500).json({ message: 'Server error during password processing.' });
+    }
+  });
 });
 
 // LOGIN
