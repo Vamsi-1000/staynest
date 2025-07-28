@@ -74,7 +74,7 @@ app.use((req, res, next) => {
 // Setup express-session
 app.use(session({
   key: 'staynest_session_id',
-  secret: 'yourSecretKey',
+  secret: process.env.SESSION_SECRET,
   store: sessionStore,
   resave: false,
   saveUninitialized: false,
