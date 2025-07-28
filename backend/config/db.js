@@ -1,6 +1,8 @@
 // db.js
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
+import path from 'path';
+
 dotenv.config({ path: path.resolve('config/.env') });
 
 
