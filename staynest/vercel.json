@@ -3,6 +3,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://staynest-backend-thd5.onrender.com/api/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
@@ -24,10 +28,6 @@
         {
           "key": "Access-Control-Allow-Headers",
           "value": "Content-Type,Authorization"
-        },
-        {
-          "key": "Set-Cookie",
-          "value": "SameSite=None; Secure"
         }
       ]
     }
