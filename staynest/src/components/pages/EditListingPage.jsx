@@ -105,7 +105,7 @@ function EditListingPage() {
             {existingImages.map((img, idx) => (
               <img
   key={idx}
-  src={img.startsWith('http') ? img : `https://staynest-backend-thd5.onrender.com${img}`}
+  src={img.startsWith('http') ? img : `https://staynest-backend-thd5.onrender.com/${img}`}
   alt={`preview-${idx}`}
   width="150"
   height="100"
