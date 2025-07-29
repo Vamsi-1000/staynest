@@ -100,21 +100,21 @@ function EditListingPage() {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Current Images</label>
-          <div className="d-flex gap-3 flex-wrap">
-            {existingImages.map((img, idx) => (
-              <img
-  key={idx}
-  src={img.startsWith('http') ? img : `https://staynest-backend-thd5.onrender.com/${img}`}
-  alt={`preview-${idx}`}
-  width="150"
-  height="100"
-  style={{ objectFit: 'cover', borderRadius: '8px' }}
-/>
+  <label className="form-label">Current Images</label>
+  <div className="d-flex gap-3 flex-wrap">
+    {existingImages.map((img, idx) => (
+      <img
+        key={idx}
+        src={img.startsWith('http') ? img : `https://staynest-backend-thd5.onrender.com${img.startsWith('/') ? '' : '/'}${img}`}
+        alt={`preview-${idx}`}
+        width="150"
+        height="100"
+        style={{ objectFit: 'cover', borderRadius: '8px' }}
+      />
+    ))}
+  </div>
+</div>
 
-  ))}
-          </div>
-        </div>
 
         <div className="mb-3">
           <label className="form-label">Upload New Images (optional)</label>
