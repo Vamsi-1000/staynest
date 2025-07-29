@@ -1,5 +1,9 @@
+// vercel.json
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+    {
+      "source": "/api/:match*",
+      "destination": "https://staynest-backend-thd5.onrender.com/api/:match*"
+    }
   ]
 }
