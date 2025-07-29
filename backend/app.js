@@ -13,33 +13,28 @@ import userRoutes from './routes/users.js';
 import path from 'path';
 import expressMysqlSession from 'express-mysql-session';
 
-
-
 const MySQLStore = expressMysqlSession(session);
 const __dirname = path.resolve();
 const app = express();
 
 dotenv.config({ path: path.resolve('config/.env') });
 
-app.set('trust proxy', 1); // Important for secure cookies behind reverse proxy
-
+app.set('trust proxy', 1);
 
 // Serve uploaded images
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads', express.static('uploads'));
 
-
 // Enable CORS for frontend with credentials
 app.use(cors({
-  origin: 'https://staynest-chi.vercel.app', 
-  credentials: true, // allow cookies
+  origin: 'https://staynest-chi.vercel.app',
+  credentials: true,
 }));
 
-// Parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session store configuration
+// Session store config
 let sessionStore;
 
 try {
@@ -59,7 +54,6 @@ try {
   console.error('Failed to create MySQL session store:', err);
 }
 
-
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
   next();
@@ -67,7 +61,7 @@ app.use((req, res, next) => {
 
 app.use(cookieParser());
 
-// Setup express-session
+// ✅ UPDATED cookie config
 app.use(session({
   key: 'staynest_session_id',
   secret: process.env.SESSION_SECRET,
@@ -76,23 +70,20 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: true, // set to true if using HTTPS
-    sameSite: 'none', // allows cross-site cookies on navigation
-    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none',
+    maxAge: 24 * 60 * 60 * 1000,
   }
 }));
 
-// Passport setup
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/listings', listingRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/users', userRoutes);
 
-// Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
